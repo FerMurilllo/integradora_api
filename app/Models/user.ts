@@ -33,4 +33,23 @@ export default class User extends BaseModel {
       users.password = await Hash.make(users.password)
     }
   }
+  
+  static get crear (){
+    return [ 
+      'username',
+      'email',
+      'password',
+      'role_id',
+    ]
+  }
+  
+  static get actualizar (){
+    return [ 
+      'username',
+      'email',
+      'password',
+      'role_id',
+    ]
+  }
+
 }

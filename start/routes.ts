@@ -4,14 +4,19 @@ Route.get('/', async () => {
   return { hello: 'world' }
 })
 
-Route.post('/login' , "UsersController")
-Route.post('/logout' , "UsersController")
 
+
+Route.group(()=>{
+  Route.resource("/user", "UsersController"),
+  Route.resource("/sensores", 'SensoresController')
+  Route.post('/login' , "UsersController.login")
+  Route.post('/logout' , "UsersController.logout")
+  Route.get('/get/user' , "UsersController.usuario")
+  Route.get('/', async () => {return { hello: 'world' }})
+}).prefix('api/v1')
 
 //Route.group(()=> {
 
-  Route.resource("/User", "UsersController"),
-  Route.resource("/sensores", 'SensoresController')
  
   
 //}).middleware(["auth"])
