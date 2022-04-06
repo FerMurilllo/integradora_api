@@ -2,6 +2,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/user'
 
 import GeneraleException from 'App/Exceptions/GeneraleException'
+import { Response } from '@adonisjs/core/build/standalone'
 
 const errores = new GeneraleException()
 
@@ -30,11 +31,13 @@ export default class UsersController {
     }
   }
 
-  public async logout({auth}){
+  public async logout({auth, response}){
     await auth.use('api').revoke()
-    return {
-      revoked: true
-    }
+    return response.ok({
+      revoked: true,
+      mensaje:'Sesion Terminada'
+    }) 
+    
   }
 
   public async index({response}: HttpContextContract) {
