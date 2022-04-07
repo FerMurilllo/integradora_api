@@ -9,7 +9,7 @@ import GeneraleException from 'App/Exceptions/GeneraleException'
 
 const errores = new GeneraleException()
 
-export default class SensoresController {
+export default class AutosController {
 
   public async index({ response }: HttpContextContract) {
     try{

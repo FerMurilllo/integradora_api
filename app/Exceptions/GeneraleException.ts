@@ -16,23 +16,19 @@ export default class GeneraleException extends Exception {
     constructor() {
         super("Logger")
     }
-    protected statusPages = {
-        '404': 'errors/not-found',
-        '500..599': 'errors/server-error',
-    }
 
     public async handle (error, modelo , response ) {
         // console.log(error)
         switch(modelo){
             case "usuarios":
                 switch (error.code) {
-                case 'E_PASSWORD_MISMATCH':
+                case 'E_INVALID_AUTH_PASSWORD':
                     return response.unauthorized({error:'Contraseña incorrecta'})
                     break;
-                case 'E_USER_NOT_FOUND':
+                case 'E_INVALID_AUTH_UID':
                     return response.notFound({error:'Usuario no encontrado'})
                     break;
-                case 'E_MISSING_DATABASE_ROW':
+                case 'E_ROW_NOT_FOUND':
                     return response.notFound({error:'Usuario no encontrado'})
                     break;
                 case 'E_INVALID_API_TOKEN':
@@ -44,8 +40,19 @@ export default class GeneraleException extends Exception {
                     break;
                 }
             break;
+            case "sensores":
+                switch (error.code) {
+                case '':
+                    return response.unauthorized({error:'Contraseña incorrecta'})
+                    break;
+                default:
+                    console.log(error)
+                    return response.status(400).send({error:error.code})
+                    break;
+                }
+            break;
             default:
-                
+                break;
         }
     }
 

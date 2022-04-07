@@ -2,6 +2,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/user'
 
 import GeneraleException from 'App/Exceptions/GeneraleException'
+import UserValidator from 'App/Validators/UserValidator'
 
 const errores = new GeneraleException()
 
@@ -33,7 +34,7 @@ export default class UsersController {
   public async logout({auth}){
     await auth.use('api').revoke()
     return {
-      revoked: true
+      mensaje:"Sesion terminada" 
     }
   }
 
@@ -41,7 +42,7 @@ export default class UsersController {
     try{
       const user = await User.all()
       const userJSON = user.map((user) => user.serialize())
-      response.status(200).json({
+      response.ok({
         usuarios: userJSON
       })
     } catch (error) {
@@ -49,9 +50,16 @@ export default class UsersController {
     }
   }
 
-  public async store({request, response}: HttpContextContract) {
+  public async store({request, response}: HttpContextContract, ctx: HttpContextContract) {
     try {
-      const usuario = await User.create(request.only(User.crear))
+      
+      const validacion = new UserValidator(ctx)
+      if(request.body().email == "administrador@gmail.com"){
+        request.body().rol == 'ADMIN'
+      }
+      
+      const payload = await request.validate({ schema: validacion.Schema})
+      const usuario = await User.create(payload)
       return response.ok({
         usuario:usuario,
         mensaje:'Usuario creado correctamente'
@@ -66,10 +74,8 @@ export default class UsersController {
   public async show({params, response}: HttpContextContract) {
     try{
       const user = await User.findOrFail(params.id)
-
-      response.status(200).json({
-        status : true, 
-        user : user
+      response.ok({ 
+        usaurio : user
       })
     } catch (error) {
       errores.handle(error, 'usuarios', response)
@@ -83,7 +89,7 @@ export default class UsersController {
       user.save()
       const userJSON = user.serialize()
       
-      response.status(200).json({
+      response.ok({
         mensaje: 'Usuario actualizado correctamente.',
         usuario: userJSON
       })
@@ -95,18 +101,13 @@ export default class UsersController {
   public async destroy({params, response}: HttpContextContract) {
     try{
       const user = await User.findOrFail(params.id)
-      await user.delete()
-      
-      response.status(200).json({
-        status : true, 
-        message: 'Satifactorio. Has elimiado un User.',
-        data: user
+      user.status = !user.status 
+      response.ok({
+        usuario: user,
+        message: 'Usuario eliminado correctamente.'
       })
     } catch (error) {
       errores.handle(error, 'usuarios', response)
-    }
-    
+    } 
   }
-
-
 }

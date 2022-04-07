@@ -11,6 +11,9 @@ export default class User extends BaseModel {
 
   @column()
   public email: string
+  
+  @column()
+  public status: boolean
 
   @column()
   public rol:string
@@ -39,7 +42,7 @@ export default class User extends BaseModel {
       'username',
       'email',
       'password',
-      'role_id',
+      'rol',
     ]
   }
   
@@ -48,7 +51,7 @@ export default class User extends BaseModel {
       'username',
       'email',
       'password',
-      'role_id',
+      'rol',
     ]
   }
 
