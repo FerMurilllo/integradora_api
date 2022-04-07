@@ -31,7 +31,7 @@ export default class UsersController {
     }
   }
 
-  public async logout({auth}){
+  public async logout({auth, response}){
     await auth.use('api').revoke()
     return {
       mensaje:"Sesion terminada" 
