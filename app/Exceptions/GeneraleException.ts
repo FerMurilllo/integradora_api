@@ -34,6 +34,13 @@ export default class GeneraleException extends Exception {
                 case 'E_INVALID_API_TOKEN':
                     return response.notFound({error:'Token invalido'})
                     break;
+                case 'ER_DUP_ENTRY':
+                    return response.notFound({error:'El correo ya esta en uso'})
+                    break;
+                    
+                case 'E_VALIDATION_FAILURE':
+                    return response.notFound({error:'Error de validacion', mensajes: error.messages})
+                    break;
                 default:
                     console.log(error)
                     return response.status(400).send({error:error.code})

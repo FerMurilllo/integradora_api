@@ -7,7 +7,6 @@ import UserValidator from 'App/Validators/UserValidator'
 const errores = new GeneraleException()
 
 export default class UsersController {
-
   async  usuario ({auth, response }) {
     try {
       return response.ok({usuario: await auth.use('api').authenticate()})
@@ -15,7 +14,6 @@ export default class UsersController {
       errores.handle(error, 'usuarios', response)
     }
   }
-
   public async login({auth, request, response}:HttpContextContract){
     const email = request.input('email')
     const password = request.input('password')
@@ -37,7 +35,6 @@ export default class UsersController {
       mensaje:"Sesion terminada" 
     }
   }
-
   public async index({response}: HttpContextContract) {
     try{
       const user = await User.all()
@@ -49,28 +46,23 @@ export default class UsersController {
       errores.handle(error, 'usuarios', response)
     }
   }
-
-  public async store({request, response}: HttpContextContract, ctx: HttpContextContract) {
+  public async store( ctx: HttpContextContract) {
     try {
-      
       const validacion = new UserValidator(ctx)
-      if(request.body().email == "administrador@gmail.com"){
-        request.body().rol == 'ADMIN'
-      }
       
-      const payload = await request.validate({ schema: validacion.Schema})
+      const payload = await ctx.request.validate({ schema: validacion.Schema})
       const usuario = await User.create(payload)
-      return response.ok({
+      return ctx.response.ok({
         usuario:usuario,
         mensaje:'Usuario creado correctamente'
       })
 
     } catch (error) {
-      errores.handle(error, 'usuarios', response)
+      // response.badRequest(error.messages)
+      errores.handle(error, 'usuarios',   ctx.response)
     }
 
   }
-
   public async show({params, response}: HttpContextContract) {
     try{
       const user = await User.findOrFail(params.id)
@@ -81,7 +73,6 @@ export default class UsersController {
       errores.handle(error, 'usuarios', response)
     }
   }
-
   public async update({params, request, response}: HttpContextContract) {
     try{
       const user = await User.findOrFail(params.id)
@@ -97,7 +88,6 @@ export default class UsersController {
       errores.handle(error, 'usuarios', response)
     }
   }
-
   public async destroy({params, response}: HttpContextContract) {
     try{
       const user = await User.findOrFail(params.id)
