@@ -25,7 +25,6 @@ export default class UserValidator {
    */
   public Schema = schema.create({
     username: schema.string(),
-    rol: schema.enum(['ADMIN', 'USER']),
     email: schema.string({}, [
       rules.email({
         sanitize: true,
@@ -33,9 +32,7 @@ export default class UserValidator {
         domainSpecificValidation: true,
       }),
     ]),
-    password: schema.string({}, [
-      rules.confirmed('password_confirmation')
-    ]),
+    password: schema.string({}),
   });
 
   /**
