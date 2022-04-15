@@ -67,7 +67,7 @@ export default class UsersController {
     try{
       const user = await User.findOrFail(params.id)
       response.ok({ 
-        usaurio : user
+        usuario : user
       })
     } catch (error) {
       errores.handle(error, 'usuarios', response)
@@ -89,15 +89,26 @@ export default class UsersController {
     }
   }
   public async destroy({params, response}: HttpContextContract) {
-    try{
-      const user = await User.findOrFail(params.id)
-      user.status = !user.status 
-      response.ok({
-        usuario: user,
-        message: 'Usuario eliminado correctamente.'
+    const US:any =  await User.find(params.id)
+    try {
+      if(US.status == 1){
+        US.status = 0
+        await US.save()
+        return response.status(201).send({
+          Usuario: US,
+          message:"Status InActivo"
+      })}else if(US.status == 0){
+        US.status = 1
+        await US.save()
+        return response.status(201).send({
+          Usuario: US,
+          message:"Status Activo"
       })
-    } catch (error) {
-      errores.handle(error, 'usuarios', response)
-    } 
+      }
+
+      }catch (e) {
+        return response.status(400).send({
+            Fail:"Ha Ocurrido Un Error"
+        })}
   }
 }

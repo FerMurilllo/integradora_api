@@ -1,18 +1,21 @@
-import { Schema, model } from 'mongoose';
+import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm';
+import { DateTime } from 'luxon';
 
-interface Auto {
-    nombre: string,
-    user : Object,  
-    sensores : Array<Object>
-}
+export default class AutoModel extends BaseModel{
+  @column({ isPrimary: true })
+  public id: number
 
-export default class AutoModel{
+  @column()
+  public username :string
 
-  static schema = new Schema<Auto>({
-    nombre : {type: String, required : true},
-    user : { type : Object},
-    sensores : [{ nombre:String ,valor:Number }]
-  });
+  @column()
+  public status: boolean
 
-  static AutoModel = model<Auto>('Auto', this.schema);
+  @column.dateTime({ autoCreate: true })
+  public createdAt: DateTime
+
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  public updatedAt: DateTime
+
+
 }
