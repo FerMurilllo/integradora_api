@@ -19,7 +19,7 @@ export default class UsersController {
     const password = request.input('password')
     try {
       const token = await auth.use('api').attempt(email, password)
-      response.ok({
+      return response.ok({
         mensaje:'Sesion iniciada',
         access_token: token
       })
@@ -31,9 +31,10 @@ export default class UsersController {
 
   public async logout({auth, response}){
     await auth.use('api').revoke()
-    return {
-      mensaje:"Sesion terminada" 
-    }
+    
+    return response.ok({
+      mensaje:'Sesion terminada'
+    })
   }
   public async index({response}: HttpContextContract) {
     try{
@@ -66,7 +67,7 @@ export default class UsersController {
   public async show({params, response}: HttpContextContract) {
     try{
       const user = await User.findOrFail(params.id)
-      response.ok({ 
+      return response.ok({ 
         usaurio : user
       })
     } catch (error) {
@@ -80,7 +81,7 @@ export default class UsersController {
       user.save()
       const userJSON = user.serialize()
       
-      response.ok({
+      return response.ok({
         mensaje: 'Usuario actualizado correctamente.',
         usuario: userJSON
       })
@@ -92,7 +93,7 @@ export default class UsersController {
     try{
       const user = await User.findOrFail(params.id)
       user.status = !user.status 
-      response.ok({
+      return response.ok({
         usuario: user,
         message: 'Usuario eliminado correctamente.'
       })
