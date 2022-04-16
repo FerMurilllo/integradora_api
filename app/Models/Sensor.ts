@@ -15,11 +15,23 @@ export default class Sensor extends BaseModel {
   public descripcion: string
 
   @column()
-  public status: boolean
+  public status: number
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  static get crear (){
+    return [ 
+      'nombre',
+      'descripcion',
+      'status',
+    ]
+  }
+  static get status(){
+    return[
+    'status']
+  }
 }

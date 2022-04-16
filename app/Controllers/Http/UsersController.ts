@@ -90,15 +90,19 @@ export default class UsersController {
     }
   }
   public async destroy({params, response}: HttpContextContract) {
-    try{
-      const user = await User.findOrFail(params.id)
-      user.status = !user.status 
+    try {
+      const US:any =  await User.findOrFail(params.id)
+      let mensaje = ""
+      if(US.status){ mensaje= "Status Inactivo" }
+      if(!US.status){ mensaje= "Status Inactivo" }
+      US.status = !US.status 
+      await US.save()
       return response.ok({
-        usuario: user,
-        message: 'Usuario eliminado correctamente.'
+        usuario: US,
+        mensaje:mensaje
       })
-    } catch (error) {
-      errores.handle(error, 'usuarios', response)
-    } 
+      }catch (error) {
+        errores.handle(error, 'usuarios', response)
+      }
   }
 }
