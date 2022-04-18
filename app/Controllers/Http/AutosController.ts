@@ -4,7 +4,7 @@ import { connect } from 'mongoose';
 
 // const url = 'mongodb://3.140.240.243:27017/';
 
-const url = 'mongodb://18.222.86.0:27017/';
+const url = 'mongodb://18.222.86.0:27017/IntegradoraAPI';
 // const url = 'mongodb+srv://mike:platinum@sandbox.tbdy0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
 
 const auto = AutoModel.AutoModel; 
