@@ -2,7 +2,11 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import AutoModel from 'App/Models/auto';
 import { connect } from 'mongoose';
 
-const url = 'mongodb://localhost:27017/Integradora_API';
+// const url = 'mongodb://3.140.240.243:27017/';
+
+const url = 'mongodb://18.222.86.0:27017/';
+// const url = 'mongodb+srv://mike:platinum@sandbox.tbdy0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+
 const auto = AutoModel.AutoModel; 
 
 import GeneraleException from 'App/Exceptions/GeneraleException'
@@ -13,7 +17,9 @@ export default class AutosController {
 
   public async index({ response }: HttpContextContract) {
     try{
-      await connect(url);
+      await connect(url)
+      .then(() => console.log("Mongodb connected"))
+      .catch(err => {console.log(err), console.log("no jalo :c")});
       const autos = await auto.find({}); 
       response.ok({
         auto: autos
