@@ -9,6 +9,8 @@ Route.get('/', async () => {
 Route.group(()=>{
   Route.resource("/user", "UsersController").apiOnly(),
   Route.resource("/sensores", 'SensoresController').apiOnly()
+  Route.resource("/autos", 'AutosController').apiOnly()
+
   Route.post('/login' , "UsersController.login")
   Route.post('/logout' , "UsersController.logout")
   Route.get('/get/user' , "UsersController.usuario")
