@@ -11,7 +11,7 @@ interface Sensor{
 interface IntAuto {
   _id: number;
   nombre: string;
-  dueño: Object;
+  user: Object;
   sensores: Array<Sensor>;
 }
 
@@ -33,9 +33,9 @@ export default class AutoModel extends BaseModel{
 
 
   static autoSchema = new Schema<IntAuto>({
-    _id: { type: Number, required: true },
-    nombre: { type: String, required: true },
-    dueño: { usuario:Object, required: false },
+    // _id: { type: Number, required: true },
+    nombre: { type: String, required: false },
+    user: { type:Object , required: false },
     sensores: [{ required: false }],
   });
   static AutoModel: any = model<IntAuto>('pelicula', this.autoSchema);

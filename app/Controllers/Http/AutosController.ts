@@ -4,7 +4,8 @@ import { connect } from 'mongoose';
 
 // const url = 'mongodb://3.140.240.243:27017/';
 
-const url = 'mongodb://18.222.86.0:27017/IntegradoraAPI';
+// const url = 'mongodb://18.222.86.0:27017/IntegradoraAPI';
+const url = 'mongodb://127.0.0.1:27017/IntegradoraAPI';
 // const url = 'mongodb+srv://mike:platinum@sandbox.tbdy0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
 
 const auto = AutoModel.AutoModel; 
@@ -29,13 +30,17 @@ export default class AutosController {
     }
   }
 
-  public async store({request,response}: HttpContextContract) {
+  public async store({auth, request,response}: HttpContextContract) {
     try {
       await connect(url);
+      const user = await auth.use('api').authenticate()
+      // console.log("falla aqui")
       const autos= new auto({
-        nombre : request.input('nombre')
+        nombre : request.input('nombre'),
+        user: user,
       })
       await autos.save()
+      // return user
       response.ok({
         auto: autos,
         mensaje: "Auto registrado correctamente"
@@ -62,13 +67,8 @@ export default class AutosController {
   public async update({request,params, response}: HttpContextContract) {
     try{
       await connect(url);
-      const autos = await auto.updateOne({_id: params.id}, 
-        { 
-        nombre : request.input("nombre"),
-        user: request.input("usuario"),
-        $push:{
-          sensores: request.input('sensor')|request.input('sensores')
-        }
+      const autos = await auto.updateOne({_id: params.id}, { 
+        nombre : request.input("nombre")
       })
       response.ok({
         massage : "Auto actualizado correctamente",

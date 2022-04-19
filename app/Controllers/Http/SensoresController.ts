@@ -1,49 +1,70 @@
-
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Sensor from 'App/Models/Sensor';
+import GeneraleException from 'App/Exceptions/GeneraleException'
+
+const errores = new GeneraleException()
 
 export default class SensoresController {
-
-  public async index({ response }) {
-    const auto = await Sensor.all()
+  public async index({ response }:HttpContextContract) {
+    const sensor = await Sensor.all()
     return response.ok({
-      autos:auto
+      sensor:sensor
     })
   }
 
-  public async show({params, response}) {
-    const sen =  await Sensor.find(params.id)
-    if( sen == null){
-        return response.status(400).send({
-            message: "Sensor No Encontrado",
-        })
-    }else{
-        return response.status(200).send({
-            Sensor: sen,
-        })
-    }      
+  public async show({params, response}:HttpContextContract) {
+    try {
+      const sensor =  await Sensor.findOrFail(params.id)
+      return response.ok({
+          sensor: sensor,
+      })
+    } catch (error) {
+      errores.handle(error, 'sensores', response)
+    }
   }
 
-  public async destroy({params, response}) {
-    const sen:any =  await Sensor.find(params.id)
+  public async store( {request, response}: HttpContextContract) {
     try {
-      if(sen.status == 1){
-        sen.status = 0
-        await sen.save()
-        return response.status(201).send({
-          Sensor: sen,
-          message:"Status InActivo"
-      })}else if(sen.status == 0){
-        sen.status = 1
-        await sen.save()
-        return response.status(201).send({
-          Sensor: sen,
-          message:"Status Activo"
+      const sensor = await Sensor.create(request.only(Sensor.crear))
+      return response.ok({
+        sensor:sensor,
+        mensaje:'Sensor creado correctamente'
       })
-      }
+    } catch (error) {
+      errores.handle(error, 'sensores',   ctx.response)
+    }
+  }
+  
+  public async store( {request, response}: HttpContextContract) {
+    try {
+      const sensor = await Sensor.merge(request.only(Sensor.crear))
+      return response.ok({
+        sensor:sensor,
+        mensaje:'Sensor actualizado correctamente'
+      })
+    } catch (error) {
+      errores.handle(error, 'sensores',   ctx.response)
+    }
+  }
 
-      }catch (e) {
-        return response.status(400).send({
-            Fail:"Ha Ocurrido Un Error"
-        })}
-}
+  public async destroy({params, response}:HttpContextContract) {
+    try {
+      const sensor =  await Sensor.findOrFail(params.id)
+      sensor.status = !sensor.status
+      await sensor.save()
+      if(sensor.status){
+        return response.ok({
+          sensor: sensor,
+          mensaje:"Status Inactivo"
+        })
+      }else if(!sensor.status){
+        return response.ok({
+          sensor: sensor,
+          mensaje:"Status Activo"
+        })
+      }
+    }catch (error) {
+      errores.handle(error, 'sensores', response)
+    }
+  }
 }

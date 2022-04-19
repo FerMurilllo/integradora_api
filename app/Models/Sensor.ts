@@ -26,8 +26,7 @@ export default class Sensor extends BaseModel {
   static get crear (){
     return [ 
       'nombre',
-      'descripcion',
-      'status',
+      'descripcion'
     ]
   }
   static get status(){
