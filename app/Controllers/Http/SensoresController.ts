@@ -31,19 +31,20 @@ export default class SensoresController {
         mensaje:'Sensor creado correctamente'
       })
     } catch (error) {
-      errores.handle(error, 'sensores',   ctx.response)
+      errores.handle(error, 'sensores', response)
     }
   }
   
-  public async store( {request, response}: HttpContextContract) {
+  public async update( {params,request, response}: HttpContextContract) {
     try {
-      const sensor = await Sensor.merge(request.only(Sensor.crear))
+      const sensor = await Sensor.findOrFail(params.id)
+      sensor.merge(request.only(Sensor.crear))
       return response.ok({
         sensor:sensor,
         mensaje:'Sensor actualizado correctamente'
       })
     } catch (error) {
-      errores.handle(error, 'sensores',   ctx.response)
+      errores.handle(error, 'sensores', response)
     }
   }
 

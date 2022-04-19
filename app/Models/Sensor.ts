@@ -15,7 +15,7 @@ export default class Sensor extends BaseModel {
   public descripcion: string
 
   @column()
-  public status: number
+  public status: boolean
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
