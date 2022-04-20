@@ -6,7 +6,6 @@ import { connect } from 'mongoose';
 
 // const url = 'mongodb://18.222.86.0:27017/IntegradoraAPI';
 const url = 'mongodb://127.0.0.1:27017/IntegradoraAPI';
-// const url = 'mongodb+srv://mike:platinum@sandbox.tbdy0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
 
 const auto = AutoModel.AutoModel; 
 
@@ -23,10 +22,10 @@ export default class AutosController {
       .catch(err => {console.log(err), console.log("no jalo :c")});
       const autos = await auto.find({}); 
       response.ok({
-        auto: autos
+        autos: autos
       })
     } catch (error) {
-      errores.handle(error, 'usuarios', response)
+      errores.handle(error, 'autos', response)
     }
   }
 
@@ -34,19 +33,17 @@ export default class AutosController {
     try {
       await connect(url);
       const user = await auth.use('api').authenticate()
-      // console.log("falla aqui")
       const autos= new auto({
         nombre : request.input('nombre'),
-        user: user,
+        user: user.serializeAttributes(),
       })
       await autos.save()
-      // return user
       response.ok({
         auto: autos,
         mensaje: "Auto registrado correctamente"
       })
     } catch (error) {
-      errores.handle(error, 'usuarios', response)
+      errores.handle(error, 'autos', response)
     }
   }
 
@@ -60,7 +57,7 @@ export default class AutosController {
         auto: autos
       })
     } catch (error) {
-      errores.handle(error, 'usuarios', response)
+      errores.handle(error, 'autos', response)
     }
   }
 
@@ -71,11 +68,11 @@ export default class AutosController {
         nombre : request.input("nombre")
       })
       response.ok({
-        massage : "Auto actualizado correctamente",
+        mensaje : "Auto actualizado correctamente",
         auto: autos
       })
     } catch (error) {
-      errores.handle(error, 'usuarios', response)
+      errores.handle(error, 'autos', response)
     }
   }
 
@@ -84,11 +81,103 @@ export default class AutosController {
       await connect(url);
       const autos = await auto.deleteOne({_id: params.id}); 
       response.status(200).json({
-        massage : "Auto eliminado correctamente",
-        data: autos
+        mensaje : "Auto eliminado correctamente",
+        auto: autos
       })
     } catch (error) {
-      errores.handle(error, 'usuarios', response)
+      errores.handle(error, 'autos', response)
     }
   }
+  
+  public async setMovimiento({ request,response}: HttpContextContract) {
+    try {
+      await connect(url);
+      const valores = request.input('valores')
+      valores.fecha = new Date()
+      
+      console.log(1)
+      
+      const carrito = await  auto.updateOne({_id : request.input("auto")}, { 
+        $push:{motores:valores}
+      });
+      const carro = await  auto.find({_id : request.input("auto")})
+       
+      response.ok({
+        mensaje : "Valores asignados correctamente",
+        auto: carro
+      })
+    } catch (error) {
+      errores.handle(error, 'autos', response)
+    }
+  }
+    
+  public async getMovimiento({ request,response}: HttpContextContract) {
+    try {
+      await connect(url);
+
+      const carro = await  auto.find({_id : request.input("auto")}, {motores:1})
+      response.ok({
+        auto: carro
+      })
+    } catch (error) {
+      errores.handle(error, 'autos', response)
+    }
+  }
+  public async getLastMovimiento({ request,response}: HttpContextContract) {
+    try {
+      await connect(url);
+      
+      console.log(request.input("auto"))
+      const value = await  auto.aggregate([
+        {
+          '$match': {
+            "id": "62608c53b2c584668de4aba5"
+          }
+        }
+      ])
+
+       response.ok({
+        value: value
+      })
+    } catch (error) {
+      errores.handle(error, 'autos', response)
+    }
+  }
+  
+  public async setLight({ request,response}: HttpContextContract) {
+    try {
+      await connect(url);
+      const valores = request.input('valores')
+      valores.fecha = new Date()
+      
+      console.log(1)
+      
+      const carrito = await  auto.updateOne({_id : request.input("auto")}, { 
+        $push:{motores:valores}
+      });
+      const carro = await  auto.find({_id : request.input("auto")})
+       
+      response.ok({
+        mensaje : "Valores asignados correctamente",
+        auto: carro
+      })
+    } catch (error) {
+      errores.handle(error, 'autos', response)
+    }
+  }
+    
+  public async getLight({ request,response}: HttpContextContract) {
+    try {
+      await connect(url);
+
+      const carro = await  auto.find({_id : request.input("auto")})
+       
+      response.ok({
+        auto: carro
+      })
+    } catch (error) {
+      errores.handle(error, 'autos', response)
+    }
+  }
+
 }

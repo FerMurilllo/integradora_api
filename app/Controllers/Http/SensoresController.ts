@@ -8,7 +8,7 @@ export default class SensoresController {
   public async index({ response }:HttpContextContract) {
     const sensor = await Sensor.all()
     return response.ok({
-      sensor:sensor
+      sensores:sensor
     })
   }
 

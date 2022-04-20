@@ -10,6 +10,12 @@ Route.group(()=>{
   Route.resource("/user", "UsersController").apiOnly(),
   Route.resource("/sensores", 'SensoresController').apiOnly()
   Route.resource("/autos", 'AutosController').apiOnly()
+  
+  Route.post("/auto/sensor", 'AutosController.registrar_sensor')
+
+  Route.post("/auto/set/movimiento", 'AutosController.setMovimiento')
+  Route.post("/auto/get/movimiento", 'AutosController.getMovimiento')
+  Route.post("/auto/last/movimiento", 'AutosController.getLastMovimiento')
 
   Route.post('/login' , "UsersController.login")
   Route.post('/logout' , "UsersController.logout")
