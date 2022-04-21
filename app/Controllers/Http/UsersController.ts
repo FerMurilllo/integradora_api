@@ -62,7 +62,6 @@ export default class UsersController {
       // response.badRequest(error.messages)
       errores.handle(error, 'usuarios',   ctx.response)
     }
-
   }
   public async show({params, response}: HttpContextContract) {
     try{

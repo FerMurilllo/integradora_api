@@ -4,8 +4,8 @@ import { connect } from 'mongoose';
 
 // const url = 'mongodb://3.140.240.243:27017/';
 
-const url = 'mongodb://18.222.86.0:27017/IntegradoraAPI';
-// const url = 'mongodb+srv://mike:platinum@sandbox.tbdy0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+// const url = 'mongodb://18.222.86.0:27017/IntegradoraAPI';
+const url = 'mongodb://127.0.0.1:27017/IntegradoraAPI';
 
 const auto = AutoModel.AutoModel; 
 
@@ -18,30 +18,42 @@ export default class AutosController {
   public async index({ response }: HttpContextContract) {
     try{
       await connect(url)
-      .then(() => console.log("Mongodb connected"))
-      .catch(err => {console.log(err), console.log("no jalo :c")});
       const autos = await auto.find({}); 
-      response.ok({
-        auto: autos
+      return response.ok({
+        autos: autos
       })
     } catch (error) {
-      errores.handle(error, 'usuarios', response)
+      errores.handle(error, 'autos', response)
     }
   }
 
-  public async store({request,response}: HttpContextContract) {
+  public async store({auth, request,response}: HttpContextContract) {
     try {
       await connect(url);
+
+
+      const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let result1= '';
+      const charactersLength = characters.length;
+      for ( let i = 0; i < 40; i++ ) {
+          result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
+      }
+      
+      const user = await auth.use('api').authenticate()
       const autos= new auto({
-        nombre : request.input('nombre')
+        _id: result1,
+        // id: result1,
+        nombre : request.input('nombre'),
+        user: user.serializeAttributes(),
       })
       await autos.save()
-      response.ok({
+
+      return response.ok({
         auto: autos,
         mensaje: "Auto registrado correctamente"
       })
     } catch (error) {
-      errores.handle(error, 'usuarios', response)
+      errores.handle(error, 'autos', response)
     }
   }
 
@@ -51,31 +63,26 @@ export default class AutosController {
 
       const autos = await  auto.find({idSensor : params.id});
 
-      response.status(200).json({
+      return response.status(200).json({
         auto: autos
       })
     } catch (error) {
-      errores.handle(error, 'usuarios', response)
+      errores.handle(error, 'autos', response)
     }
   }
 
   public async update({request,params, response}: HttpContextContract) {
     try{
       await connect(url);
-      const autos = await auto.updateOne({_id: params.id}, 
-        { 
-        nombre : request.input("nombre"),
-        user: request.input("usuario"),
-        $push:{
-          sensores: request.input('sensor')|request.input('sensores')
-        }
+      const autos = await auto.updateOne({_id: params.id}, { 
+        nombre : request.input("nombre")
       })
-      response.ok({
-        massage : "Auto actualizado correctamente",
+      return response.ok({
+        mensaje : "Auto actualizado correctamente",
         auto: autos
       })
     } catch (error) {
-      errores.handle(error, 'usuarios', response)
+      errores.handle(error, 'autos', response)
     }
   }
 
@@ -84,11 +91,232 @@ export default class AutosController {
       await connect(url);
       const autos = await auto.deleteOne({_id: params.id}); 
       response.status(200).json({
-        massage : "Auto eliminado correctamente",
-        data: autos
+        mensaje : "Auto eliminado correctamente",
+        auto: autos
       })
     } catch (error) {
-      errores.handle(error, 'usuarios', response)
+      errores.handle(error, 'autos', response)
+    }
+  }
+  
+  public async setMovimiento({ request,response}: HttpContextContract) {
+    try {
+      await connect(url);
+      const valores = request.input('valores')
+      valores.fecha = new Date()
+      
+      const carrito = await  auto.updateOne({id : request.input("auto")}, { 
+        $push:{motores:valores}
+      });
+      const carro = await  auto.find({_id : request.input("auto")})
+       
+      return response.ok({
+        mensaje : "Valores asignados correctamente",
+        auto: carro
+      })
+    } catch (error) {
+      errores.handle(error, 'autos', response)
+    }
+  }
+    
+  public async getMovimiento({ request,response}: HttpContextContract) {
+    try {
+      await connect(url);
+
+      const carro = await  auto.find({_id : request.input("auto")}, {motores:1})
+      return response.ok({
+        auto: carro
+      })
+    } catch (error) {
+      errores.handle(error, 'autos', response)
+    }
+  }
+  
+  public async getLastMovimiento({ request,response}: HttpContextContract) {
+    try {
+      await connect(url);
+      const value = await  auto.aggregate([
+        {$match: { _id: request.input("auto") }}, 
+        {$project: { motores: 1}}, 
+        {$unwind: { path: '$motores'}}, 
+        {$replaceRoot: { newRoot: '$motores'}}, 
+        {$sort: { fecha: -1}}, 
+        {$limit: 1}
+      ])
+       return response.ok({
+        value: value
+      })
+    } catch (error) {
+      errores.handle(error, 'autos', response)
+    }
+  }
+  
+  public async setLeds({ request,response}: HttpContextContract) {
+    try {
+      await connect(url);
+      const valores = request.input('valores')
+      valores.fecha = new Date()
+      
+      const carrito = await  auto.updateOne({id : request.input("auto")}, { 
+        $push:{leds:valores}
+      });
+      const carro = await  auto.find({_id : request.input("auto")})
+       
+      return response.ok({
+        mensaje : "Valores asignados correctamente",
+        auto: carro
+      })
+    } catch (error) {
+      errores.handle(error, 'autos', response)
+    }
+  }
+    
+  public async getLeds({ request,response}: HttpContextContract) {
+    try {
+      await connect(url);
+
+      const carro = await  auto.find({_id : request.input("auto")}, {leds:1})
+      return response.ok({
+        auto: carro
+      })
+    } catch (error) {
+      errores.handle(error, 'autos', response)
+    }
+  }
+
+  public async getLastLeds({ request,response}: HttpContextContract) {
+    try {
+      await connect(url);
+      const value = await  auto.aggregate([
+        {$match: { _id: request.input("auto") }}, 
+        {$project: { motores: 1}}, 
+        {$unwind: { path: '$leds'}}, 
+        {$replaceRoot: { newRoot: '$leds'}}, 
+        {$sort: { fecha: -1}}, 
+        {$limit: 1}
+      ])
+       return response.ok({
+        value: value
+      })
+    } catch (error) {
+      errores.handle(error, 'autos', response)
+    }
+  }
+    
+  public async getTemp({ request,response}: HttpContextContract) {
+    try {
+      await connect(url);
+
+      const carro = await  auto.find({_id : request.input("auto")}, {temperatura:1})
+      return response.ok({
+        auto: carro
+      })
+    } catch (error) {
+      errores.handle(error, 'autos', response)
+    }
+  }
+ 
+  public async getVel({ request,response}: HttpContextContract) {
+    try {
+      await connect(url);
+
+      const carro = await  auto.find({_id : request.input("auto")}, {velocidad:1})
+      return response.ok({
+        auto: carro
+      })
+    } catch (error) {
+      errores.handle(error, 'autos', response)
+    }
+  }
+  
+  
+  
+  public async setTemp({ request,response}: HttpContextContract) {
+    try {
+      await connect(url);
+      const valores = request.input('valores')
+      valores.fecha = new Date()
+      
+      const carrito = await  auto.updateOne({id : request.input("auto")}, { 
+        $push:{temperatura:valores}
+      });
+      const carro = await  auto.find({_id : request.input("auto")})
+       
+      return response.ok({
+        mensaje : "Valores asignados correctamente",
+        auto: carro
+      })
+    } catch (error) {
+      errores.handle(error, 'autos', response)
+    }
+  }
+  public async setVel({ request,response}: HttpContextContract) {
+    try {
+      await connect(url);
+      const valores = request.input('valores')
+      valores.fecha = new Date()
+      
+      const carrito = await  auto.updateOne({id : request.input("auto")}, { 
+        $push:{velocidad:valores}
+      });
+      const carro = await  auto.find({_id : request.input("auto")})
+       
+      return response.ok({
+        mensaje : "Valores asignados correctamente",
+        auto: carro
+      })
+    } catch (error) {
+      errores.handle(error, 'autos', response)
+    }
+  }
+   
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  public async setValores({ request,response}: HttpContextContract) {
+    try {
+      await connect(url);
+      const valores = request.input('valores')
+      valores.temperatura.fecha = new Date()
+      valores.ultrasonico1.fecha = new Date()
+      valores.ultrasonico2.fecha = new Date()
+      valores.velocidad.fecha = new Date()
+      valores.infrarrojo.fecha = new Date()
+      // console.log(valores.temperatura)
+      // console.log(valores.ultrasonico1)
+      // console.log(valores.ultrasonico2)
+      // console.log(valores.velocidad)
+      // console.log(valores.infrarrojo)
+      
+      const carrito = await  auto.updateOne({id : request.input("auto")}, { 
+        $push:{
+          temperatura:valores.temperatura,
+          ultrasonico1:valores.ultrasonico1,
+          ultrasonico2:valores.ultrasonico2,
+          velocidad:valores.velocidad,
+          infrarrojo:valores.infrarrojo
+        }
+      });
+      const carro = await  auto.find({_id : request.input("auto")})
+       
+      return response.ok({
+        mensaje : "Valores asignados correctamente",
+        auto: carro
+      })
+    } catch (error) {
+      errores.handle(error, 'autos', response)
     }
   }
 }
