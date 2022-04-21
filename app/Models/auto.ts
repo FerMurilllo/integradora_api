@@ -46,13 +46,13 @@ export default class AutoModel extends BaseModel{
     // id: { type: String, required: true },
     nombre: { type: String, required: false },
     user: { type:Object , required: false },
-    motores: [{type:Object, required: false }],
-    ultrasonico1: [{type:Object, required: false }],
-    ultrasonico2: [{type:Object, required: false }],
-    leds: [{type:Object, required: false }],
-    velocidad: [{type:Object, required: false }],
-    infrarrojo: [{type:Object, required: false }],
-    temperatura: [{type:Object, required: false }],
+    motores: [{type:Object, required: false }],                       //listo
+    ultrasonico1: [{type:Object, required: false }],                  //
+    ultrasonico2: [{type:Object, required: false }],                  //
+    leds: [{type:Object, required: false }],                          //listo
+    velocidad: [{type:Object, required: false }],                     //listo
+    infrarrojo: [{type:Object, required: false }],                    //listo
+    temperatura: [{type:Object, required: false }],                   //listo
     
   });
   static AutoModel: any = model<IntAuto>('autos', this.autoSchema);

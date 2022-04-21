@@ -22,9 +22,16 @@ Route.group(()=>{
   Route.post("/auto/get/leds", 'AutosController.getLeds')
   Route.post("/auto/last/leds", 'AutosController.getLastLeds')
 
-  Route.post("/auto/set/temp", 'AutosController.setTemp')
   Route.post("/auto/get/temp", 'AutosController.getTemp')
-
+  Route.post("/auto/set/temp", 'AutosController.setTemp')
+  
+  Route.post("/auto/get/vel", 'AutosController.getVel')
+  Route.post("/auto/set/vel", 'AutosController.setVel')
+  
+  
+  Route.post("/auto/set/valores", 'AutosController.setValores')
+  
+  
   Route.post('/login' , "UsersController.login")
   Route.post('/logout' , "UsersController.logout")
   Route.get('/get/user' , "UsersController.usuario")
