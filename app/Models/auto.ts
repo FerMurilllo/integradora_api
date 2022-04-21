@@ -9,8 +9,9 @@ interface Sensor{
 }
 
 interface IntAuto {
-  _id: number;
-  id: number;
+  _id: string;
+  id: string;
+  // id: number;
   nombre: string;
   user: Object;
   motores: Array<Object>;
@@ -19,6 +20,7 @@ interface IntAuto {
   leds: Array<Object>;
   velocidad: Array<Object>;
   infrarrojo: Array<Object>;
+  temperatura: Array<Object>;
 }
 
 export default class AutoModel extends BaseModel{
@@ -39,7 +41,9 @@ export default class AutoModel extends BaseModel{
 
 
   static autoSchema = new Schema<IntAuto>({
-    id: { type: Number, required: true },
+    // id: { type: Number, required: false },
+    _id: { type: String, required: true },
+    // id: { type: String, required: true },
     nombre: { type: String, required: false },
     user: { type:Object , required: false },
     motores: [{type:Object, required: false }],
@@ -48,6 +52,7 @@ export default class AutoModel extends BaseModel{
     leds: [{type:Object, required: false }],
     velocidad: [{type:Object, required: false }],
     infrarrojo: [{type:Object, required: false }],
+    temperatura: [{type:Object, required: false }],
     
   });
   static AutoModel: any = model<IntAuto>('autos', this.autoSchema);

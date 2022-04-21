@@ -18,10 +18,8 @@ export default class AutosController {
   public async index({ response }: HttpContextContract) {
     try{
       await connect(url)
-      .then(() => console.log("Mongodb connected"))
-      .catch(err => {console.log(err), console.log("no jalo :c")});
       const autos = await auto.find({}); 
-      response.ok({
+      return response.ok({
         autos: autos
       })
     } catch (error) {
@@ -32,13 +30,25 @@ export default class AutosController {
   public async store({auth, request,response}: HttpContextContract) {
     try {
       await connect(url);
+
+
+      const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let result1= '';
+      const charactersLength = characters.length;
+      for ( let i = 0; i < 40; i++ ) {
+          result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
+      }
+      
       const user = await auth.use('api').authenticate()
       const autos= new auto({
+        _id: result1,
+        // id: result1,
         nombre : request.input('nombre'),
         user: user.serializeAttributes(),
       })
       await autos.save()
-      response.ok({
+
+      return response.ok({
         auto: autos,
         mensaje: "Auto registrado correctamente"
       })
@@ -53,7 +63,7 @@ export default class AutosController {
 
       const autos = await  auto.find({idSensor : params.id});
 
-      response.status(200).json({
+      return response.status(200).json({
         auto: autos
       })
     } catch (error) {
@@ -67,7 +77,7 @@ export default class AutosController {
       const autos = await auto.updateOne({_id: params.id}, { 
         nombre : request.input("nombre")
       })
-      response.ok({
+      return response.ok({
         mensaje : "Auto actualizado correctamente",
         auto: autos
       })
@@ -95,14 +105,12 @@ export default class AutosController {
       const valores = request.input('valores')
       valores.fecha = new Date()
       
-      console.log(1)
-      
-      const carrito = await  auto.updateOne({_id : request.input("auto")}, { 
+      const carrito = await  auto.updateOne({id : request.input("auto")}, { 
         $push:{motores:valores}
       });
       const carro = await  auto.find({_id : request.input("auto")})
        
-      response.ok({
+      return response.ok({
         mensaje : "Valores asignados correctamente",
         auto: carro
       })
@@ -116,27 +124,26 @@ export default class AutosController {
       await connect(url);
 
       const carro = await  auto.find({_id : request.input("auto")}, {motores:1})
-      response.ok({
+      return response.ok({
         auto: carro
       })
     } catch (error) {
       errores.handle(error, 'autos', response)
     }
   }
+  
   public async getLastMovimiento({ request,response}: HttpContextContract) {
     try {
       await connect(url);
-      
-      console.log(request.input("auto"))
       const value = await  auto.aggregate([
-        {
-          '$match': {
-            "id": "62608c53b2c584668de4aba5"
-          }
-        }
+        {$match: { _id: request.input("auto") }}, 
+        {$project: { motores: 1}}, 
+        {$unwind: { path: '$motores'}}, 
+        {$replaceRoot: { newRoot: '$motores'}}, 
+        {$sort: { fecha: -1}}, 
+        {$limit: 1}
       ])
-
-       response.ok({
+       return response.ok({
         value: value
       })
     } catch (error) {
@@ -144,20 +151,18 @@ export default class AutosController {
     }
   }
   
-  public async setLight({ request,response}: HttpContextContract) {
+  public async setLeds({ request,response}: HttpContextContract) {
     try {
       await connect(url);
       const valores = request.input('valores')
       valores.fecha = new Date()
       
-      console.log(1)
-      
-      const carrito = await  auto.updateOne({_id : request.input("auto")}, { 
-        $push:{motores:valores}
+      const carrito = await  auto.updateOne({id : request.input("auto")}, { 
+        $push:{leds:valores}
       });
       const carro = await  auto.find({_id : request.input("auto")})
        
-      response.ok({
+      return response.ok({
         mensaje : "Valores asignados correctamente",
         auto: carro
       })
@@ -166,13 +171,12 @@ export default class AutosController {
     }
   }
     
-  public async getLight({ request,response}: HttpContextContract) {
+  public async getLeds({ request,response}: HttpContextContract) {
     try {
       await connect(url);
 
-      const carro = await  auto.find({_id : request.input("auto")})
-       
-      response.ok({
+      const carro = await  auto.find({_id : request.input("auto")}, {leds:1})
+      return response.ok({
         auto: carro
       })
     } catch (error) {
@@ -180,4 +184,57 @@ export default class AutosController {
     }
   }
 
+  public async getLastLeds({ request,response}: HttpContextContract) {
+    try {
+      await connect(url);
+      const value = await  auto.aggregate([
+        {$match: { _id: request.input("auto") }}, 
+        {$project: { motores: 1}}, 
+        {$unwind: { path: '$leds'}}, 
+        {$replaceRoot: { newRoot: '$leds'}}, 
+        {$sort: { fecha: -1}}, 
+        {$limit: 1}
+      ])
+       return response.ok({
+        value: value
+      })
+    } catch (error) {
+      errores.handle(error, 'autos', response)
+    }
+  }
+
+  
+  public async setTemp({ request,response}: HttpContextContract) {
+    try {
+      await connect(url);
+      const valores = request.input('valores')
+      valores.fecha = new Date()
+      
+      const carrito = await  auto.updateOne({id : request.input("auto")}, { 
+        $push:{temperatura:valores}
+      });
+      const carro = await  auto.find({_id : request.input("auto")})
+       
+      return response.ok({
+        mensaje : "Valores asignados correctamente",
+        auto: carro
+      })
+    } catch (error) {
+      errores.handle(error, 'autos', response)
+    }
+  }
+    
+  public async getTemp({ request,response}: HttpContextContract) {
+    try {
+      await connect(url);
+
+      const carro = await  auto.find({_id : request.input("auto")}, {temperatura:1})
+      return response.ok({
+        auto: carro
+      })
+    } catch (error) {
+      errores.handle(error, 'autos', response)
+    }
+  }
+  
 }
