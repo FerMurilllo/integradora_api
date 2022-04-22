@@ -15,9 +15,15 @@ Route.group(()=>{
   
   Route.resource("/user", "UsersController").apiOnly()
   Route.resource("/autos", 'AutosController').apiOnly()
-  Route.get("/sensores", 'SensoresController.show')
+  Route.get("/sensores/:id", 'SensoresController.show')
+  Route.get("/sensores", 'SensoresController.index')
+  Route.delete('/sensores/:id', 'SensoresController.destroy')
   // Route.post("/auto/sensor", 'AutosController.registrar_sensor')
   
+  Route.get('/dato', 'DatosController.index')
+  Route.post('/dato', 'DatosController.store')
+  Route.delete('/dato/:id', 'DatosController.destroy')
+
   /////////////////////////////////////////////////////////////////////////////////////////////////
   //// Estas rutas sirven para que nuestro auto pueda acceder a los ultimos valores de ////////////
   //// movimiento asignadas por el usuario desde el sistema web, movil o api //////////////////////
@@ -26,14 +32,13 @@ Route.group(()=>{
   Route.post("/auto/last/movimiento", 'AutosController.getLastMovimiento')
   /*  EJEMPLO DE DEVOLUCION DE DATOS DE LOS MOVIMIENTOS
   {
-	"value": [
+	"valores": [
 		{
 			"Motor_Delante": false,
 			"Motor_Reversa": true,
 			"Motor_Derecha": false,
 			"Motor_Izquieda": false,
 			"Motor_Apagado": false,
-			"fecha": "2022-04-21T15:41:22.896Z"
       }
     ]
   }*/

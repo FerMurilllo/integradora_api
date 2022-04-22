@@ -74,7 +74,7 @@ export default class AutosController {
     try{
       await connect(url);
 
-      const autos = await  auto.find({idSensor : params.id});
+      const autos = await  auto.find({_id : params.id});
 
       return response.status(200).json({
         auto: autos
