@@ -41,7 +41,6 @@ export default class AutosController {
     try{
       this.conexion() 
       const user = await auth.use('api').authenticate()
-      // return user.id
       const autos = await auto.find({user:user.serializeAttributes()})
       return response.ok({
         autos: autos
@@ -135,9 +134,11 @@ export default class AutosController {
       const valores = request.input('valores')
       valores.fecha = new Date()
       
-      const carrito = await  auto.updateOne({id : request.input("auto")}, { 
-        $push:{motores:valores},
+      const carrito = await  auto.updateOne({
+        id : request.input("auto"),
         user:user.serializeAttributes()
+      }, { 
+        $push:{motores:valores}
       });
       const carro = await  auto.find({_id : request.input("auto")})
        
