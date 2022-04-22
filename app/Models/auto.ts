@@ -13,7 +13,8 @@ interface IntAuto {
   ultrasonico2: Array<Object>;
   leds: Array<Object>;
   velocidad: Array<Object>;
-  infrarrojo: Array<Object>;
+  infrarrojo1: Array<Object>;
+  infrarrojo2: Array<Object>;
   temperatura: Array<Object>;
 }
 
@@ -45,7 +46,8 @@ export default class AutoModel extends BaseModel{
     ultrasonico2: [{type:Object, required: false }],                  //
     leds: [{type:Object, required: false }],                          //listo
     velocidad: [{type:Object, required: false }],                     //listo
-    infrarrojo: [{type:Object, required: false }],                    //listo
+    infrarrojo1: [{type:Object, required: false }],                    //listo
+    infrarrojo2: [{type:Object, required: false }],                    //listo
     temperatura: [{type:Object, required: false }],                   //listo
     
   });

@@ -55,15 +55,15 @@ export default class AutosController {
       
       this.conexion();
 
-      const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      let result1= '';
-      const charactersLength = characters.length;
-      for ( let i = 0; i < 40; i++ ) {
-          result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
-      }
+      // const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      // let result1= '';
+      // const charactersLength = characters.length;
+      // for ( let i = 0; i < 40; i++ ) {
+      //     result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
+      // }
       
       const autos= new auto({
-        _id: result1,
+        _id: request.input('codigo_serie'),
         // id: result1,
         nombre : request.input('nombre'),
         user: user.serializeAttributes(),
@@ -297,12 +297,26 @@ export default class AutosController {
     }
   }
 
-  public async getInfra({ request,response}: HttpContextContract) {
+  public async getInfra1({ request,response}: HttpContextContract) {
     try {
       
       this.conexion();
 
-      const infrarrojo = await  auto.find({_id : request.input("auto")}, {infrarrojo:1})
+      const infrarrojo = await  auto.find({_id : request.input("auto")}, {infrarrojo1:1})
+      return response.ok({
+        infrarrojo: infrarrojo
+      })
+    } catch (error) {
+      errores.handle(error, 'autos', response)
+    }
+  }
+  
+  public async getInfra2({ request,response}: HttpContextContract) {
+    try {
+      
+      this.conexion();
+
+      const infrarrojo = await  auto.find({_id : request.input("auto")}, {infrarrojo2:1})
       return response.ok({
         infrarrojo: infrarrojo
       })
@@ -328,7 +342,8 @@ export default class AutosController {
           ultrasonico1:valores.ultrasonico1,
           ultrasonico2:valores.ultrasonico2,
           velocidad:valores.velocidad,
-          infrarrojo:valores.infrarrojo
+          infrarrojo1:valores.infrarrojo1,
+          infrarrojo2:valores.infrarrojo2
         }
       });
       const carro = await  auto.find({_id : request.input("auto")})
