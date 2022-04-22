@@ -29,7 +29,7 @@ Route.group(()=>{
   //// Estas rutas sirven para que nuestro auto pueda acceder a los ultimos valores de ////////////
   //// movimiento asignadas por el usuario desde el sistema web, movil o api //////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
-
+  
   Route.post("/auto/last/movimiento", 'AutosController.getLastMovimiento')
   /*  EJEMPLO DE DEVOLUCION DE DATOS DE LOS MOVIMIENTOS
   {
@@ -40,6 +40,7 @@ Route.group(()=>{
 			"Motor_Derecha": false,
 			"Motor_Izquieda": false,
 			"Motor_Apagado": false,
+			"fecha": "2022-04-21T15:41:22.896Z"
       }
     ]
   }*/

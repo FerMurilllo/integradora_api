@@ -7,7 +7,7 @@ import { connect } from 'mongoose';
 const url = 'mongodb://127.0.0.1:27017,127.0.0.1:27018,127.0.0.1:27019/IntegradoraAPI';
 // const url = 'mongodb://127.0.0.1:27017,127.0.0.1:27018,127.0.0.1:27019/IntegradoraAPI';
 
-// const url = 'mongodb://3.140.240.243:27017,18.222.86.0:27017,/IntegradoraAPI';
+// const url = 'mongodb://3.140.240.243:27017,18.222.86.0:27017,/IntegradoraAPI'; 
 
 const auto = AutoModel.AutoModel; 
 
