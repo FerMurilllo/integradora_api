@@ -41,6 +41,7 @@ export default class AutosController {
     try{
       this.conexion() 
       const user = await auth.use('api').authenticate()
+      // return user.id
       const autos = await auto.find({user:user.serializeAttributes()})
       return response.ok({
         autos: autos
