@@ -322,7 +322,7 @@ export default class AutosController {
       valores.velocidad.fecha = new Date()
       valores.infrarrojo.fecha = new Date()
       
-      const carrito = await  auto.updateOne({id : request.input("auto")}, { 
+      const carrito = await  auto.updateOne({_id : request.input("auto")}, { 
         $push:{
           temperatura:valores.temperatura,
           ultrasonico1:valores.ultrasonico1,
