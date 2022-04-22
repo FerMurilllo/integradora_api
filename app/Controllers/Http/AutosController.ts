@@ -135,8 +135,7 @@ export default class AutosController {
       valores.fecha = new Date()
       
       const carrito = await  auto.updateOne({
-        id : request.input("auto"),
-        user:user.serializeAttributes()
+        id : request.input("auto")
       }, { 
         $push:{motores:valores}
       });
@@ -194,8 +193,7 @@ export default class AutosController {
       valores.fecha = new Date()
       // const carrito = await auto.find({user:user.serializeAttributes()})
       const carrito = await  auto.updateOne({
-        id : request.input("auto"),
-        user:user.serializeAttributes()
+        id : request.input("auto")
       }, { 
         $push:{leds:valores}
       });
