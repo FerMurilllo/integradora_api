@@ -96,7 +96,7 @@ Route.group(()=>{
   Route.post("/auto/get/ultra1", 'AutosController.getUltra1')
   Route.post("/auto/get/ultra2", 'AutosController.getUltra2')
   Route.post("/auto/get/vel", 'AutosController.getVel')
-  Route.post("/auto/get/finfra", 'AutosController.getInfra')
+  Route.post("/auto/get/infra", 'AutosController.getInfra')
     
   /////////////////////////////////////////////////////////////////////////////////////////////////
   //// Estas rutas utilizan la autenticacion para hacer el login, el logout, y tambien para ///////
