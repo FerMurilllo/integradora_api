@@ -2,12 +2,6 @@ import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm';
 import { DateTime } from 'luxon';
 import { Schema, model} from 'mongoose';
 
-interface Sensor{
-  _id: number;
-  nombre: string;
-  valores: Array<Object>;
-}
-
 interface IntAuto {
   _id: string;
   id: string;

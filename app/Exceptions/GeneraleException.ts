@@ -58,6 +58,21 @@ export default class GeneraleException extends Exception {
                     break;
                 }
             break;
+            
+            case "autos":
+                switch (error.code) {
+                case '':
+                    return response.unauthorized({error:'Contraseña incorrecta'})
+                    break;
+                case 'E_INVALID_API_TOKEN':
+                    return response.notFound({error:'Token invalido'})
+                    break;
+                default:
+                    console.log(error)
+                    return response.status(400).send({error:error.code})
+                    break;
+                }
+            break;
             default:
                 break;
         }
