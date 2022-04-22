@@ -4,8 +4,10 @@ import { connect } from 'mongoose';
 
 // const url = 'mongodb://3.140.240.243:27017/';
 
-// const url = 'mongodb://18.222.86.0:27017/IntegradoraAPI';
-const url = 'mongodb://127.0.0.1:27017/IntegradoraAPI';
+const url = 'mongodb://127.0.0.1:27017,127.0.0.1:27018,127.0.0.1:27019/IntegradoraAPI';
+// const url = 'mongodb://127.0.0.1:27017,127.0.0.1:27018,127.0.0.1:27019/IntegradoraAPI';
+
+// const url = 'mongodb://3.140.240.243:27017,18.222.86.0:27017,/IntegradoraAPI';
 
 const auto = AutoModel.AutoModel; 
 
@@ -15,9 +17,17 @@ const errores = new GeneraleException()
 
 export default class AutosController {
 
+  async conexion(){
+    await connect(url)
+    .then(() => console.log("Mongodb connected"))
+    .catch(err => {
+      console.log(err)
+    });
+  }
+
   public async index({ response }: HttpContextContract) {
     try{
-      await connect(url)
+      this.conexion()
       const autos = await auto.find({}); 
       return response.ok({
         autos: autos
@@ -29,7 +39,7 @@ export default class AutosController {
 
   public async getCarsByUser({ auth, response }: HttpContextContract) {
     try{
-      await connect(url) 
+      this.conexion() 
       const user = await auth.use('api').authenticate()
       const autos = await auto.find({user:user.serializeAttributes()})
       return response.ok({
@@ -42,8 +52,9 @@ export default class AutosController {
 
   public async store({auth, request,response}: HttpContextContract) {
     try {
-      await connect(url);
-
+      const user = await auth.use('api').authenticate()
+      
+      this.conexion();
 
       const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
       let result1= '';
@@ -52,7 +63,6 @@ export default class AutosController {
           result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
       }
       
-      const user = await auth.use('api').authenticate()
       const autos= new auto({
         _id: result1,
         // id: result1,
@@ -72,7 +82,8 @@ export default class AutosController {
 
   public async show({params, response}: HttpContextContract) {
     try{
-      await connect(url);
+      
+      this.conexion();
 
       const autos = await  auto.find({_id : params.id});
 
@@ -86,7 +97,8 @@ export default class AutosController {
 
   public async update({request,params, response}: HttpContextContract) {
     try{
-      await connect(url);
+      
+      this.conexion();
       const autos = await auto.updateOne({_id: params.id}, { 
         nombre : request.input("nombre")
       })
@@ -101,7 +113,8 @@ export default class AutosController {
 
   public async destroy({params, response}: HttpContextContract) {
     try{
-      await connect(url);
+      
+      this.conexion();
       const autos = await auto.deleteOne({_id: params.id}); 
       response.status(200).json({
         mensaje : "Auto eliminado correctamente",
@@ -116,7 +129,8 @@ export default class AutosController {
     try {
       const user = await auth.use('api').authenticate()
       
-      await connect(url);
+      
+      this.conexion();
       const valores = request.input('valores')
       valores.fecha = new Date()
       
@@ -137,7 +151,8 @@ export default class AutosController {
     
   public async getMovimiento({ request,response}: HttpContextContract) {
     try {
-      await connect(url);
+      
+      this.conexion();
 
       const movimientos = await  auto.find({_id : request.input("auto")}, {motores:1})
       return response.ok({
@@ -150,7 +165,8 @@ export default class AutosController {
   
   public async getLastMovimiento({ request,response}: HttpContextContract) {
     try {
-      await connect(url);
+      
+      this.conexion();
       const movimiento = await  auto.aggregate([
         {$match: { _id: request.input("auto") }}, 
         {$project: { motores: 1}}, 
@@ -170,7 +186,8 @@ export default class AutosController {
   public async setLeds({ auth, request,response}: HttpContextContract) {
     try {
       const user = await auth.use('api').authenticate()
-      await connect(url);
+      
+      this.conexion();
       const valores = request.input('valores')
       valores.fecha = new Date()
       // const carrito = await auto.find({user:user.serializeAttributes()})
@@ -193,7 +210,8 @@ export default class AutosController {
     
   public async getLeds({ request,response}: HttpContextContract) {
     try {
-      await connect(url);
+      
+      this.conexion();
 
       const estados = await  auto.find({_id : request.input("auto")}, {leds:1})
       return response.ok({
@@ -206,7 +224,8 @@ export default class AutosController {
 
   public async getLastLeds({ request,response}: HttpContextContract) {
     try {
-      await connect(url);
+      
+      this.conexion();
       const estado = await  auto.aggregate([
         {$match: { _id: request.input("auto") }}, 
         {$project: { leds: 1}}, 
@@ -225,7 +244,8 @@ export default class AutosController {
     
   public async getTemp({ request,response}: HttpContextContract) {
     try {
-      await connect(url);
+      
+      this.conexion();
 
       const temperaturas = await  auto.find({_id : request.input("auto")}, {temperatura:1})
       return response.ok({
@@ -238,7 +258,8 @@ export default class AutosController {
  
   public async getUltra1({ request,response}: HttpContextContract) {
     try {
-      await connect(url);
+      
+      this.conexion();
 
       const ultrasonico = await  auto.find({_id : request.input("auto")}, {ultrasonico1:1})
       return response.ok({
@@ -251,7 +272,8 @@ export default class AutosController {
   
   public async getUltra2({ request,response}: HttpContextContract) {
     try {
-      await connect(url);
+      
+      this.conexion();
 
       const ultrasonico = await  auto.find({_id : request.input("auto")}, {ultrasonico2:1})
       return response.ok({
@@ -264,7 +286,8 @@ export default class AutosController {
   
   public async getVel({ request,response}: HttpContextContract) {
     try {
-      await connect(url);
+      
+      this.conexion();
 
       const velocidades = await  auto.find({_id : request.input("auto")}, {velocidad:1})
       return response.ok({
@@ -277,7 +300,8 @@ export default class AutosController {
 
   public async getInfra({ request,response}: HttpContextContract) {
     try {
-      await connect(url);
+      
+      this.conexion();
 
       const infrarrojo = await  auto.find({_id : request.input("auto")}, {infrarrojo:1})
       return response.ok({
@@ -290,7 +314,8 @@ export default class AutosController {
 
   public async setValores({ request,response}: HttpContextContract) {
     try {
-      await connect(url);
+      
+      this.conexion();
       const valores = request.input('valores')
       valores.temperatura.fecha = new Date()
       valores.ultrasonico1.fecha = new Date()
@@ -317,4 +342,5 @@ export default class AutosController {
       errores.handle(error, 'autos', response)
     }
   }
+
 }

@@ -14,6 +14,7 @@ Route.group(()=>{
   /////////////////////////////////////////////////////////////////////////////////////////////////
   
   Route.resource("/user", "UsersController").apiOnly()
+  Route.post("usuario/autos", 'AutosController.getCarsByUser')
   Route.resource("/autos", 'AutosController').apiOnly()
   Route.get("/sensores/:id", 'SensoresController.show')
   Route.get("/sensores", 'SensoresController.index')
@@ -28,7 +29,7 @@ Route.group(()=>{
   //// Estas rutas sirven para que nuestro auto pueda acceder a los ultimos valores de ////////////
   //// movimiento asignadas por el usuario desde el sistema web, movil o api //////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
-  
+
   Route.post("/auto/last/movimiento", 'AutosController.getLastMovimiento')
   /*  EJEMPLO DE DEVOLUCION DE DATOS DE LOS MOVIMIENTOS
   {
@@ -100,7 +101,7 @@ Route.group(()=>{
   Route.post("/auto/get/ultra1", 'AutosController.getUltra1')
   Route.post("/auto/get/ultra2", 'AutosController.getUltra2')
   Route.post("/auto/get/vel", 'AutosController.getVel')
-  Route.post("/auto/get/finfra", 'AutosController.getInfra')
+  Route.post("/auto/get/infra", 'AutosController.getInfra')
     
   /////////////////////////////////////////////////////////////////////////////////////////////////
   //// Estas rutas utilizan la autenticacion para hacer el login, el logout, y tambien para ///////
