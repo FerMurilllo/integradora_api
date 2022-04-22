@@ -14,6 +14,7 @@ Route.group(()=>{
   /////////////////////////////////////////////////////////////////////////////////////////////////
   
   Route.resource("/user", "UsersController").apiOnly()
+  Route.post("usuario/autos", 'AutosController.getCarsByUser')
   Route.resource("/autos", 'AutosController').apiOnly()
   Route.get("/sensores", 'SensoresController.show')
   // Route.post("/auto/sensor", 'AutosController.registrar_sensor')
@@ -22,7 +23,7 @@ Route.group(()=>{
   //// Estas rutas sirven para que nuestro auto pueda acceder a los ultimos valores de ////////////
   //// movimiento asignadas por el usuario desde el sistema web, movil o api //////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////
-  
+
   Route.post("/auto/last/movimiento", 'AutosController.getLastMovimiento')
   /*  EJEMPLO DE DEVOLUCION DE DATOS DE LOS MOVIMIENTOS
   {
