@@ -4,9 +4,9 @@ import { connect } from 'mongoose';
 
 // const url = 'mongodb://3.140.240.243:27017/';
 
-const url = 'mongodb://127.0.0.1:27017,127.0.0.1:27018,127.0.0.1:27019/IntegradoraAPI';
+//const url = 'mongodb://127.0.0.1:27017,127.0.0.1:27018,127.0.0.1:27019/IntegradoraAPI';
 /*                                     /                                 //                             //                             */
-// const url = 'mongodb://3.140.240.243:27017,18.222.86.0:27017,3.138.67.71:27017/IntegradoraAPI'; 
+const url = 'mongodb://3.140.240.243:27017,18.222.86.0:27017,3.138.67.71:27017/IntegradoraAPI'; 
 
 const auto = AutoModel.AutoModel; 
 
@@ -134,7 +134,7 @@ export default class AutosController {
       valores.fecha = new Date()
       
       const carrito = await  auto.updateOne({
-        id : request.input("auto")
+        _id : request.input("auto")
       }, { 
         $push:{motores:valores}
       });
@@ -329,13 +329,15 @@ export default class AutosController {
     try {
       
       this.conexion();
+	//console.log("falla aqui")
       const valores = request.input('valores')
       valores.temperatura.fecha = new Date()
       valores.ultrasonico1.fecha = new Date()
       valores.ultrasonico2.fecha = new Date()
       valores.velocidad.fecha = new Date()
-      valores.infrarrojo.fecha = new Date()
-      
+      valores.infrarrojo1.fecha = new Date()
+      valores.infrarrojo2.fecha = new Date()
+      //console.log("falla aca")
       const carrito = await  auto.updateOne({_id : request.input("auto")}, { 
         $push:{
           temperatura:valores.temperatura,
