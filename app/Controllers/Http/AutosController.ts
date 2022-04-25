@@ -359,4 +359,109 @@ export default class AutosController {
     }
   }
 
+  public async getLastDataByCar({response} : HttpContextContract) {
+    try{
+      this.conexion()
+      const data = await auto.aggregate([
+        {
+          '$match': {
+            '_id': '123456789'
+          }
+        }, {
+          '$project': {
+            '_id': 0, 
+            'nombre': 0, 
+            'user': 0
+          }
+        }, {
+          '$unwind': {
+            'path': '$motores'
+          }
+        }, {
+          '$sort': {
+            'motores.fecha': -1
+          }
+        }, {
+          '$limit': 1 
+        }, {
+          '$unwind': {
+            'path': '$leds'
+          }
+        }, {
+          '$sort': {
+            'leds.fecha': -1
+          }
+        }, {
+          '$limit': 1
+        }, {
+          '$unwind': {
+            'path': '$ultrasonico1'
+          }
+        }, {
+          '$sort': {
+            'ultrasonico1.fecha': -1
+          }
+        }, {
+          '$limit': 1
+        }, {
+          '$unwind': {
+            'path': '$ultrasonico2'
+          }
+        }, {
+          '$sort': {
+            'ultrasonico2.fecha': -1
+          }
+        }, {
+          '$limit': 1
+        }, {
+          '$unwind': {
+            'path': '$velocidad'
+          }
+        }, {
+          '$sort': {
+            'velocidad.fecha': -1
+          }
+        }, {
+          '$limit': 1
+        }, {
+          '$unwind': {
+            'path': '$infrarrojo1'
+          }
+        }, {
+          '$sort': {
+            'infrarrojo1.fecha': -1
+          }
+        }, {
+          '$limit': 1
+        }, {
+          '$unwind': {
+            'path': '$infrarrojo2'
+          }
+        }, {
+          '$sort': {
+            'infrarrojo2.fecha': -1
+          }
+        }, {
+          '$limit': 1
+        }, {
+          '$unwind': {
+            'path': '$temperatura'
+          }
+        }, {
+          '$sort': {
+            'temperatura.fecha': -1
+          }
+        }, {
+          '$limit': 1
+        }
+      ]);
+
+      return response.ok({
+        autos: data
+      })
+    }
+    catch(error){
+      errores.handle(error, 'autos', response)
+    }
+  }
 }
